@@ -1,4 +1,7 @@
 import { getProjects } from "@/lib/notion";
+import Hero from "@/components/Hero";
+import About from "@/components/About";
+import Experience from "@/components/Experience";
 import ProjectFilter from "@/components/ProjectFilter";
 
 export const revalidate = 60;
@@ -15,35 +18,24 @@ export default async function Home() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="border-b border-gray-200 bg-white">
-        <div className="container-wide py-24 lg:py-32">
-          <p className="font-display text-sm font-semibold uppercase tracking-widest text-accent-600">
-            Portfolio
-          </p>
-          <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
-            안효준
-          </h1>
-          <p className="mt-2 font-display text-xl font-medium text-gray-500 sm:text-2xl">
-            기획자
-          </p>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-gray-600">
-            사용자 중심의 서비스를 기획하고, AI 도구를 활용하여 문제를 해결합니다.
-            데이터 기반의 의사결정과 효율적인 협업을 지향합니다.
-          </p>
-        </div>
-      </section>
+      <Hero />
+      <About />
+      <Experience />
 
-      {/* Projects */}
-      <section id="projects" className="scroll-mt-20">
-        <div className="container-wide py-16 lg:py-24">
-          <h2 className="font-display text-2xl font-bold text-gray-900">
-            프로젝트
-          </h2>
-          <p className="mt-2 mb-10 text-sm text-gray-500">
-            노션 DB에서 가져온 작업 목록입니다. 카테고리와 AI 도구로 필터링할
-            수 있습니다.
-          </p>
+      <section id="projects" className="scroll-mt-20 bg-white">
+        <div className="container-wide py-20 lg:py-28">
+          <div className="mb-14 max-w-2xl">
+            <p className="font-display text-sm font-semibold uppercase tracking-widest text-accent-600">
+              Projects
+            </p>
+            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              작업 기록
+            </h2>
+            <p className="mt-4 text-base text-gray-600">
+              실무에서 수행한 기획·PM 작업을 기록합니다. 카테고리와 AI 도구로
+              필터링할 수 있습니다.
+            </p>
+          </div>
 
           <ProjectFilter
             projects={projects}

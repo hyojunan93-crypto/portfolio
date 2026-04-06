@@ -4,9 +4,9 @@ import Footer from "@/components/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "안효준 | 기획자 포트폴리오",
+  title: "안효준 | Product Manager",
   description:
-    "기획자 안효준의 포트폴리오입니다. 서비스 기획, AI 도구 활용 프로젝트를 소개합니다.",
+    "HamadaLabs에서 AI Agent 및 Workflow 자동화 플랫폼 PM으로 일하는 안효준의 포트폴리오입니다. 마케터에서 PM으로의 여정, WindyFlo 제품 기획 경험을 소개합니다.",
 };
 
 export default function RootLayout({
