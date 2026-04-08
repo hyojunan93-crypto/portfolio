@@ -24,35 +24,3 @@
   }
 }
 
-@layer utilities {
-  @keyframes marquee-x {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-50%);
-    }
-  }
-
-  .animate-marquee {
-    animation: marquee-x 50s linear infinite;
-    will-change: transform;
-  }
-
-  .marquee-mask {
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent,
-      black 8%,
-      black 92%,
-      transparent
-    );
-    mask-image: linear-gradient(
-      to right,
-      transparent,
-      black 8%,
-      black 92%,
-      transparent
-    );
-  }
-}

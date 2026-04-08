@@ -1,43 +1,35 @@
 "use client";
 
-import { useState } from "react";
-import { linkedinPosts, type LinkedInPost } from "@/data/linkedinPosts";
+import { useEffect, useRef, useState } from "react";
+import { linkedinPosts } from "@/data/linkedinPosts";
 
-const CARD_WIDTH = 504; // LinkedIn embed 기본 가로
-const CARD_HEIGHT = 480; // 펼쳐진 게시글에 충분한 세로 (collapsed=1 기준)
-
-function PostCard({ post }: { post: LinkedInPost }) {
-  return (
-    <div
-      className="flex-shrink-0 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-lg"
-      style={{ width: CARD_WIDTH }}
-    >
-      <iframe
-        src={post.embedUrl}
-        width={CARD_WIDTH}
-        height={CARD_HEIGHT}
-        frameBorder={0}
-        allowFullScreen
-        title="LinkedIn 게시글"
-        loading="lazy"
-        className="block"
-      />
-    </div>
-  );
-}
+const CARD_W = 504;
+const CARD_H = 480;
+const AUTO_ADVANCE_MS = 2000;
 
 export default function LinkedInPosts() {
+  const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const total = linkedinPosts.length;
 
-  if (linkedinPosts.length === 0) return null;
+  const goTo = (idx: number) => setCurrent((idx + total) % total);
 
-  // 카드가 1개뿐이면 마퀴 대신 가운데 정렬로 보여줍니다.
-  const enableMarquee = linkedinPosts.length > 1;
-  // 무한 스크롤을 위해 데이터를 두 번 렌더링 (CSS marquee가 -50%까지만 이동)
-  const loop = enableMarquee ? [...linkedinPosts, ...linkedinPosts] : linkedinPosts;
+  useEffect(() => {
+    if (paused) return;
+    timerRef.current = setInterval(() => {
+      setCurrent((c) => (c + 1) % total);
+    }, AUTO_ADVANCE_MS);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [paused, total]);
+
+  if (total === 0) return null;
 
   return (
     <section className="border-b border-gray-200 bg-gray-50 py-20">
+      {/* 헤더 */}
       <div className="container-wide mb-10">
         <div className="flex items-end justify-between gap-4">
           <div>
@@ -62,28 +54,84 @@ export default function LinkedInPosts() {
         </div>
       </div>
 
-      {enableMarquee ? (
+      {/* 슬라이드 */}
+      <div
+        className="flex flex-col items-center gap-6"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        {/* 카드 영역 */}
         <div
-          className="marquee-mask relative overflow-hidden"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
+          className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md"
+          style={{ width: CARD_W, height: CARD_H }}
         >
-          <div
-            className="flex w-max gap-6 animate-marquee px-6"
-            style={{ animationPlayState: paused ? "paused" : "running" }}
-          >
-            {loop.map((post, idx) => (
-              <PostCard key={`${post.id}-${idx}`} post={post} />
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div className="container-wide flex justify-center">
-          {loop.map((post) => (
-            <PostCard key={post.id} post={post} />
+          {linkedinPosts.map((post, idx) => (
+            <div
+              key={post.id}
+              className="absolute inset-0 transition-opacity duration-500"
+              style={{ opacity: idx === current ? 1 : 0, pointerEvents: idx === current ? "auto" : "none" }}
+            >
+              <iframe
+                src={post.embedUrl}
+                width={CARD_W}
+                height={CARD_H}
+                frameBorder={0}
+                allowFullScreen
+                title="LinkedIn 게시글"
+                loading="lazy"
+                className="block"
+              />
+            </div>
           ))}
         </div>
-      )}
+
+        {/* 이전/다음 + 카운터 */}
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => { setPaused(true); goTo(current - 1); }}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-600 transition hover:border-accent-400 hover:text-accent-600"
+            aria-label="이전"
+          >
+            ←
+          </button>
+
+          {/* 도트 — 최대 7개 표시 */}
+          <div className="flex gap-1.5">
+            {linkedinPosts.map((_, idx) => {
+              // 가운데 7개만 보여주기
+              const half = 3;
+              const start = Math.max(0, Math.min(current - half, total - 7));
+              const end = Math.min(total, start + 7);
+              if (idx < start || idx >= end) return null;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => { setPaused(true); goTo(idx); }}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    idx === current
+                      ? "w-5 bg-accent-600"
+                      : "w-2 bg-gray-300 hover:bg-gray-400"
+                  }`}
+                  aria-label={`${idx + 1}번 게시글`}
+                />
+              );
+            })}
+          </div>
+
+          <button
+            onClick={() => { setPaused(true); goTo(current + 1); }}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-600 transition hover:border-accent-400 hover:text-accent-600"
+            aria-label="다음"
+          >
+            →
+          </button>
+        </div>
+
+        {/* 카운터 텍스트 */}
+        <p className="text-xs text-gray-400">
+          {current + 1} / {total}
+        </p>
+      </div>
     </section>
   );
 }
