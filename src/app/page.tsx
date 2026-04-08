@@ -1,5 +1,6 @@
 import { getProjects } from "@/lib/notion";
 import Hero from "@/components/Hero";
+import LinkedInPosts from "@/components/LinkedInPosts";
 import About from "@/components/About";
 import Experience from "@/components/Experience";
 import ProjectFilter from "@/components/ProjectFilter";
@@ -19,6 +20,7 @@ export default async function Home() {
   return (
     <>
       <Hero />
+      <LinkedInPosts />
       <About />
       <Experience />
 
