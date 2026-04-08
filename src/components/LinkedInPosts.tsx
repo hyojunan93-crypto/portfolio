@@ -71,10 +71,10 @@ export default function LinkedInPosts() {
               LinkedIn
             </p>
             <h2 className="font-display text-3xl font-bold text-gray-900 sm:text-4xl">
-              생각의 흐름
+              LinkedIn 게시글
             </h2>
             <p className="mt-2 max-w-xl text-sm text-gray-600">
-              제품·AI·일에 대해 LinkedIn에 남기는 짧은 기록들입니다.
+              제품, AI, 그리고 일에 대해 기록하고 있습니다.
             </p>
           </div>
           <a
